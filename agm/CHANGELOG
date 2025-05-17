@@ -1,0 +1,8 @@
+04/04/2025:
+    - Import thư viện js, css (offline) ở Module (CMS), thêm vào resources/assets/static
+    - Thêm vào ServiceProvider của module
+    - php artisan vendor:publish --tag=cms-static (sample)
+11/04/2025:
+    - migrate module khi triển khai docker nếu php artisan migrate chỉ chạy ở thư mục gốc: php artisan migrate --path=Modules/CMS/Database/Migrations
+17/04/2025:
+    - Lưu ý khi triển khai: cần bổ sung key config giay-uy-quyen-view-url, giay-uy-quyen-download-url, livestream-url, hdsd-view-url

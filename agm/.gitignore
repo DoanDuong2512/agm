@@ -1,0 +1,35 @@
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.env.development
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+/.fleet
+/.idea
+/.vscode
+
+# Bỏ qua node_modules và vendor trong tất cả các Modules
+Modules/*/node_modules/
+Modules/*/vendor/
+
+# Bỏ qua build output nếu có
+Modules/*/public/build/
+Modules/*/public/hot/
+Modules/*/storage/
+Modules/*/dist/
+/public/build-cms/
+
+# Nếu mỗi module có file .env riêng
+Modules/*/.env
+Modules/*/.env.*

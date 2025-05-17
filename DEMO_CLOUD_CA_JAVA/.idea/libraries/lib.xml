@@ -1,0 +1,62 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-impl-2.2.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/easymock-3.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-lang-2.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-core-2.13.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-databind-2.13.2.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/itextpdf-5.5.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/displaytag-portlet-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-taglib-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-fileupload-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-io-1.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ViettelFileSigner-v2.3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-2.7.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jstl-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/poi-ooxml-3.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-digester-1.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcmail-jdk15on-151.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/standard-1.0.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/httpclient-4.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-core-2.2.11.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jericho-html-2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xalan-2.7.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jackson-annotations-2.13.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/displaytag-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-tiles-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/log4j-1.2.14.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcprov-jdk15on-149.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-el-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ViettelFileSigner-v2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcpg-jdk15on-151.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bsf-2.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/eid-applet-service-signer-1.2.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/oro-2.0.8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-logging-1.0.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/QueryCrypt.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-faces-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ajaxtags-1.2-beta3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/eid-applet-service-spi-1.2.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/displaytag-export-poi-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-chain-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jstl-1.0.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-beanutils-1.8.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-io-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-core-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javax.servlet-3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/additionalbouncycastle.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-scripting-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-extras-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/bcpkix-jdk15on-149.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/xmlsec-1.5.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-validator-1.3.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-compress-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org-apache-commons-logging.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/struts-mailreader-dao-1.3.10.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joda-time-1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

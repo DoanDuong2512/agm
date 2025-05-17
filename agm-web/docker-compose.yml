@@ -1,0 +1,42 @@
+services:
+  # Development environment
+  web-app-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        BUILD_ENV: "development"
+    container_name: agm-web-dev
+    ports:
+      - "8380:80"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./docker/nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: always
+    networks:
+      - agm-network-dev
+
+  # Production environment
+  web-app-prod:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        BUILD_ENV: "production" 
+    container_name: agm-web-prod
+    ports:
+      - "8386:80"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./docker/nginx.prod.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: always
+    networks:
+      - agm-network-prod
+
+networks:
+  agm-network-dev:
+    name: agm-network-dev
+  agm-network-prod:
+    name: agm-network-prod

@@ -1,0 +1,24 @@
+image: alpine
+
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  only:
+    - develop
+  tags:
+    - agm-be
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H gitlab.com >> ~/.ssh/known_hosts
+  script:
+    - ssh $SERVER_USER@$SERVER_IP -p8022 "
+      cd /var/www/agm &&
+      git reset --hard HEAD &&
+      git clean -fd &&
+      git checkout develop &&
+      git pull https://oauth2:$AGM_BACKEND_ACCESS_TOKEN@git.elcomlab.com/dungnm/agm.git develop
+      "
