@@ -11,6 +11,14 @@ class VoteItem extends ModelBase
 
     protected $table = 'vote_items';
 
+    protected $fillable = [
+        'vote_id',
+        'noi_dung',
+        'vi_tri_ung_cu',
+        'ti_le_chap_thuan',
+        'tong_co_phan_bieu_quyet',
+        'tong_so_nguoi_bieu_quyet'
+    ];
 
     protected static function booted()
     {
@@ -24,4 +32,9 @@ class VoteItem extends ModelBase
             Auth::guard('customer')->id()
         );
     }
+    
+    public function vote() {
+        return $this->belongsTo(Vote::class, 'vote_id');
+    }
 }
+

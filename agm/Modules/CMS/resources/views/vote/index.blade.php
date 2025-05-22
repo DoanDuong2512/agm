@@ -18,7 +18,8 @@
                         placeholder="Tìm mã cổ đông"
                         clearable
                         :loading="loading"
-                        @select="change"
+                        @select="selectShareholder"
+                        @clear="clearShareholder"
                         value-key="displayText"
                        >
                     </el-autocomplete>
@@ -135,60 +136,55 @@
     <script src="{{ asset('modules/cms/static/js/element-en.js') }}"></script>
 
     <script>
-        // Thiết lập ngôn ngữ cho Element UI
         ELEMENT.locale(ELEMENT.lang.en)
         $(document).ready(function() {
             new Vue({
                 el: '#app',
                 data: {
                     message: 'hello',
-                    form: {},
-                    options: [], // Danh sách gợi ý cổ đông khi tìm kiếm
-                    baucu: [],   // Dữ liệu phiếu bầu cử
-                    bieuquyet: [], // Dữ liệu phiếu biểu quyết
+                    form: {
+
+                    },
+                    options: [],
+                    baucu: [],
+                    bieuquyet: [],
                     checked: true,
                     customers: [],
-                    keyword: '', // Từ khóa tìm kiếm mã cổ đông
+                    keyword: '',
                     loading: false,
-                    currentCustomer: {}, // Thông tin cổ đông đang chọn
+                    currentCustomer: {},
                 },
                 async mounted() {
-                    // Khi component được mount, lấy dữ liệu phiếu bầu cử và biểu quyết
                     this.getVote()
                     this.getBieuQuyet()
                 },
                 methods: {
-                    // Lấy danh sách mục phiếu bầu cử
                     getVote() {
                         const url  = '{{route('cms.vote.list')}}'
                         axios.get(url, {params: {loai: 'BAU_CU'}})
                         .then((response) => {
                             this.baucu = response.data.data
-                            // Đặt lại số phiếu bầu cho mỗi mục (nếu cần)
                             this.bieuquyet.forEach(item => {
                                 item.so_phieu_bau = 0
                             })
                         })
                         .catch(function (error) {
-                            // Xử lý lỗi nếu có
+
                         });
                     },
-                    // Lấy danh sách mục phiếu biểu quyết
                     getBieuQuyet() {
                         const url  = '{{route('cms.vote.list')}}'
                         axios.get(url, {params: {loai: 'BIEU_QUYET'}})
                             .then((response) => {
                                 this.bieuquyet = response.data.data
-                                // Gán giá trị mặc định cho kết quả biểu quyết
                                 this.bieuquyet.forEach(item => {
                                     item.ket_qua_bieu_quyet = 'TAN_THANH'
                                 })
                             })
                             .catch(function (error) {
-                                // Xử lý lỗi nếu có
+
                             });
                     },
-                    // Hàm tìm kiếm mã cổ đông (autocomplete)
                     remoteMethod(queryString, cb) {
                         if (!queryString) {
                             cb([])
@@ -196,9 +192,8 @@
                         }
                         this.loading = true
                         const url  = '{{route('cms.vote.customer')}}'
-                        axios.get(url, { params: { ma_co_dong: queryString } })
+                        axios.get(url, { params: { keywords: queryString } })
                             .then(res => {
-                                // Map dữ liệu trả về thành options cho autocomplete
                                 this.options = res.data.data.map(item => ({
                                     value: item,
                                     displayText: `${item.ma_co_dong} - ${item.name}`
@@ -212,14 +207,22 @@
                                 this.loading = false
                             })
                     },
-                    // Khi chọn một cổ đông từ autocomplete
-                    change(selectItem) {
+                    selectShareholder(selectItem) {
                         this.currentCustomer = selectItem.value
-                        // Tính tổng cổ phần sở hữu (bao gồm được ủy quyền)
                         this.currentCustomer.tong_co_phan = this.currentCustomer.co_phan_so_huu + this.currentCustomer.tong_co_phan_duoc_uy_quyen
                     },
-                    // Lưu phiếu biểu quyết
+                    clearShareholder(selectItem) {
+                        this.currentCustomer = {}
+                    },
                     saveBieuQuyet() {
+                        if (!this.currentCustomer.ma_co_dong) {
+                            this.$notify({
+                                title: 'Lỗi',
+                                message: 'Vui lòng chọn cổ đông',
+                                type: 'error'
+                            });
+                            return
+                        }
                         const data = {
                             ma_co_dong: this.currentCustomer.ma_co_dong,
                             loai: 'BIEU_QUYET',
@@ -234,7 +237,6 @@
                         const url  = '{{route('cms.vote.import')}}'
                         axios.post(url, data)
                             .then(res => {
-                                // Thông báo thành công
                                 this.$notify({
                                     title: 'Thành công',
                                     message: 'Lưu thành công',
@@ -242,7 +244,6 @@
                                 });
                             })
                             .catch(error => {
-                                // Thông báo lỗi
                                 this.$notify({
                                     title: 'Lỗi',
                                     message: error.response.data.meta.message,
@@ -251,8 +252,15 @@
                             })
 
                     },
-                    // Lưu phiếu bầu cử
                     saveBauCu() {
+                        if (!this.currentCustomer.ma_co_dong) {
+                            this.$notify({
+                                title: 'Lỗi',
+                                message: 'Vui lòng chọn cổ đông',
+                                type: 'error'
+                            });
+                            return
+                        }
                         const data = {
                             ma_co_dong: this.currentCustomer.ma_co_dong,
                             loai: 'BAU_CU',
@@ -268,7 +276,6 @@
                         const url  = '{{route('cms.vote.import')}}'
                         axios.post(url, data)
                             .then(res => {
-                                // Thông báo thành công
                                 this.$notify({
                                     title: 'Thành công',
                                     message: 'Lưu thành công',
@@ -276,7 +283,6 @@
                                 });
                             })
                             .catch(error => {
-                                // Thông báo lỗi
                                 console.log(error)
                                 this.$notify({
                                     title: 'Lỗi',
@@ -285,7 +291,6 @@
                                 });
                             })
                     },
-                    // Lưu cả hai loại phiếu (nếu muốn dùng chung)
                     saveVote() {
                         const data = {
                             ma_co_dong: this.currentCustomer.ma_co_dong,
@@ -308,7 +313,6 @@
                         const url  = '{{route('cms.vote.import')}}'
                         axios.post(url, data)
                             .then(res => {
-                                // Thông báo thành công
                                 this.$notify({
                                     title: 'Thành công',
                                     message: 'Lưu thành công',
@@ -316,7 +320,6 @@
                                 });
                             })
                             .catch(error => {
-                                // Thông báo lỗi
                                 console.log(error)
                                 this.$notify({
                                     title: 'Lỗi',
@@ -330,3 +333,4 @@
         })
     </script>
 @endpush
+

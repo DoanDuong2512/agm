@@ -13,14 +13,20 @@
                     </svg>
                 </div>
             </button>
-            <div class="collapse {{ request()->routeIs('cms.index', 'cms.meeting-configs.*', 'cms.customers.*', 'cms.authority.*', 'cms.documents.*') ? 'show' : '' }}"
+            <div class="collapse {{ request()->routeIs('cms.index', 'cms.meeting-configs.*', 'cms.customers.*', 'cms.votes.*', 'cms.authority.*', 'cms.documents.*', 'cms.vote-items.*') ? 'show' : '' }}"
                  id="setupMenu">
                 <div class="nav flex-column nav-pills ms-4 mt-2">
                     <a href="{{ route('cms.meeting-configs.index') }}" class="nav-link {{ request()->routeIs('cms.meeting-configs.*') ? 'active' : '' }} d-flex align-items-center py-1">
-                        <span>Cấu hình cuộc họp</span>
+                        <span>Cấu hình hệ thống</span>
+                    </a>
+                    <a href="{{ route('cms.vote-items.index') }}" class="nav-link {{ request()->routeIs('cms.vote-items.*') ? 'active' : '' }} d-flex align-items-center py-1">
+                        <span>Quản lý phiếu cũ </span>
+                    </a>
+                       <a href="{{ route('cms.votes.index') }}" class="nav-link {{ request()->routeIs('cms.votes.*') ? 'active' : '' }} d-flex align-items-center py-1">
+                        <span>Quản lý phiếu mới </span>
                     </a>
                     <a href="{{ route('cms.customers.index') }}" class="nav-link {{ request()->routeIs('cms.customers.*') ? 'active' : '' }} d-flex align-items-center py-1">
-                        <span>Danh sách dự họp</span>
+                        <span>Quản lý cổ đông</span>
                     </a>
                     <a href="{{ route('cms.authority.index') }}" class="nav-link {{ request()->routeIs('cms.authority.*') ? 'active' : '' }} d-flex align-items-center py-1">
                         <span>Ủy quyền tham dự</span>

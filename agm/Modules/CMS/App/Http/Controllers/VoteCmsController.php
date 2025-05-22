@@ -1,5 +1,6 @@
 <?php
 
+
 namespace Modules\CMS\App\Http\Controllers;
 
 use App\Http\Controllers\Api\BaseApiController;
@@ -8,15 +9,10 @@ use App\Models\Authority;
 use App\Models\Customer;
 use App\Models\Vote;
 use App\Models\VoteCustomerImport;
-use App\Models\VoteItem;
 use App\Models\VoteItemCustomerImport;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
-use Modules\CMS\App\Models\Document;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Log;
 
 class VoteCmsController extends BaseApiController
 {
@@ -31,21 +27,36 @@ class VoteCmsController extends BaseApiController
     }
 
 
-    public function customer(Request $request) {
-        $macodong = $request->get('ma_co_dong');
-        $customer = Customer::where('ma_co_dong', 'like', '%'.$macodong.'%')->get();
-        return $this->responseSuccess($customer);
+    public function customer(Request $request)
+    {
+        try {
+            $keywords = $request->get('keywords');
+            $customer = Customer::where('ma_co_dong', 'like', '%'. $keywords .'%')
+                ->where('is_checkin', '=', 1)
+                ->get();
+            return $this->responseSuccess($customer);
+        } catch (\Exception $e) {
+            Log::error('Error fetching customer (VoteCms): ' . $e->getMessage());
+            return $this->responseInternalServerError();
+        }
     }
 
-    public function baucu(Request $request) {
-        $loai = $request->get('loai');
-        $vote = Vote::with(['voteItems.voteCustomer'])
-            ->where('loai', $loai)
-            ->first();
-        return $this->responseSuccess($vote->voteItems);
+    public function baucu(Request $request) 
+    {
+        try {
+            $loai = $request->get('loai');
+            $vote = Vote::with(['voteItems.voteCustomer'])
+                ->where('loai', $loai)
+                ->first();
+            return $this->responseSuccess($vote->voteItems);
+        } catch (\Exception $e) {
+            Log::error('Error fetching vote items (VoteCms): ' . $e->getMessage());
+            return $this->responseInternalServerError();
+        }
     }
 
-    public function importCustomer(Request $request) {
+    public function importCustomer(Request $request) 
+    {
         $macodong = $request->get('ma_co_dong');
         $baucu = $request->get('bau_cu');
         $loai = $request->get('loai');
@@ -54,6 +65,9 @@ class VoteCmsController extends BaseApiController
         $customer = Customer::where('ma_co_dong', $macodong)->first();
         if (!$customer) {
             return $this->responseNotFound('Không tìm thấy cổ đông');
+        }
+        if ($customer->is_checkin !== 1) {
+            return $this->responseErrors(400, 'Cổ đông chưa checkin');
         }
 
         try {
@@ -109,38 +123,53 @@ class VoteCmsController extends BaseApiController
             DB::commit();
             return $this->responseSuccess();
         } catch (\Exception $exception) {
+            Log::error("Error nhập phiếu biểu quyết bầu cử: " . $exception->getMessage());
             DB::rollBack();
             return $this->responseErrors();
         }
     }
 
-    public function storeAgmInfo(Request $request) {
-        $params = $request->all();
-        AgmInfo::query()->delete();
-        $agmInfo = new AgmInfo();
-        $agmInfo->so_co_dong_tham_du = $params['so_co_dong_tham_du'];
-        $agmInfo->so_luong_co_dong_uy_quyen = $params['so_luong_co_dong_uy_quyen'];
-        $agmInfo->tong_so_co_phan_tham_gia = $params['tong_so_co_phan_tham_gia'];
-        $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet = $params['tong_so_co_phan_co_quyen_bieu_quyet'];
-        $agmInfo->ti_le = $params['ti_le'];
-        $agmInfo->save();
-        return $this->responseSuccess();
+    public function storeAgmInfo(Request $request) 
+    {
+        try {
+            $params = $request->all();
+            AgmInfo::query()->delete();
+            $agmInfo = new AgmInfo();
+            $agmInfo->so_co_dong_tham_du = $params['so_co_dong_tham_du'];
+            $agmInfo->so_luong_co_dong_uy_quyen = $params['so_luong_co_dong_uy_quyen'];
+            $agmInfo->tong_so_co_phan_tham_gia = $params['tong_so_co_phan_tham_gia'];
+            $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet = $params['tong_so_co_phan_co_quyen_bieu_quyet'];
+            $agmInfo->ti_le = $params['ti_le'];
+            $agmInfo->save();
+            return $this->responseSuccess();
+        } catch (\Exception $exception) {
+            Log::error("Error storeAgmInfo: " . $exception->getMessage());
+            return $this->responseErrors();
+        }
     }
 
-    public function getAgmInfo() {
-        $agmInfo = new AgmInfo();
-        $agmInfo->so_co_dong_tham_du = Customer::where('is_active', 1)->where('is_checkin', 1)->count() + Authority::where('authority.is_shareholder', 1)
-                ->join('customers', 'customers.id', '=', 'authority.nguoi_duoc_uy_quyen')
-                ->where('customers.is_checkin', 1)
-                ->count();
-        $agmInfo->so_luong_co_dong_uy_quyen = Authority::count();
-        $agmInfo->tong_so_co_phan_tham_gia = Customer::where('is_active', 1)->where('is_checkin', 1)->sum(DB::raw('(CASE
-            WHEN co_phan_sau_uy_quyen IS NULL OR co_phan_sau_uy_quyen = 0
-            THEN co_phan_so_huu
-            ELSE co_phan_sau_uy_quyen
-        END) + IFNULL(tong_co_phan_duoc_uy_quyen, 0)'));
-        $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet = 83290077;
-        $agmInfo->ti_le = $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet > 0 ? round(($agmInfo->tong_so_co_phan_tham_gia / $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet) * 100, 2) : 0;
-        return $this->responseSuccess($agmInfo);
+    public function getAgmInfo() 
+    {
+        try {
+            $agmInfo = new AgmInfo();
+            $agmInfo->so_co_dong_tham_du = Customer::where('is_active', 1)->where('is_checkin', 1)->count() + Authority::where('authority.is_shareholder', 1)
+                    ->join('customers', 'customers.id', '=', 'authority.nguoi_duoc_uy_quyen')
+                    ->where('customers.is_checkin', 1)
+                    ->count();
+            $agmInfo->so_luong_co_dong_uy_quyen = Authority::count();
+            $agmInfo->tong_so_co_phan_tham_gia = Customer::where('is_active', 1)->where('is_checkin', 1)->sum(DB::raw('(CASE
+                WHEN co_phan_sau_uy_quyen IS NULL OR co_phan_sau_uy_quyen = 0
+                THEN co_phan_so_huu
+                ELSE co_phan_sau_uy_quyen
+            END) + IFNULL(tong_co_phan_duoc_uy_quyen, 0)'));
+            // TODO: hard code??
+            $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet = 83290077;
+            $agmInfo->ti_le = $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet > 0 ? round(($agmInfo->tong_so_co_phan_tham_gia / $agmInfo->tong_so_co_phan_co_quyen_bieu_quyet) * 100, 2) : 0;
+            return $this->responseSuccess($agmInfo);
+        } catch (\Exception $exception) {
+            Log::error("Error getAgmInfo: " . $exception->getMessage());
+            return $this->responseErrors();
+        }
     }
 }
+
