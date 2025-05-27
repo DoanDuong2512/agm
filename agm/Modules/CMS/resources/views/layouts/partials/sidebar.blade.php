@@ -22,7 +22,7 @@
                     <a href="{{ route('cms.vote-items.index') }}" class="nav-link {{ request()->routeIs('cms.vote-items.*') ? 'active' : '' }} d-flex align-items-center py-1">
                         <span>Quản lý phiếu cũ </span>
                     </a>
-                       <a href="{{ route('cms.votes.index') }}" class="nav-link {{ request()->routeIs('cms.votes.*') ? 'active' : '' }} d-flex align-items-center py-1">
+                    <a href="{{ route('cms.votes.index') }}" class="nav-link {{ request()->routeIs('cms.votes.*') ? 'active' : '' }} d-flex align-items-center py-1">
                         <span>Quản lý phiếu mới </span>
                     </a>
                     <a href="{{ route('cms.customers.index') }}" class="nav-link {{ request()->routeIs('cms.customers.*') ? 'active' : '' }} d-flex align-items-center py-1">

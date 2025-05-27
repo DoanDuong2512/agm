@@ -11,6 +11,7 @@ use Modules\CMS\App\Http\Controllers\ConversationController;
 use Modules\CMS\App\Http\Controllers\MeetingConfigController;
 use Modules\CMS\App\Http\Controllers\PrintController;
 use Modules\CMS\App\Http\Controllers\VoteCmsController;
+use Modules\CMS\App\Http\Controllers\VotesCmsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,7 +45,9 @@ Route::prefix('admin')->name('cms.')->group(function () {
         Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
         Route::get('conversations', [ConversationController::class, 'index'])->name('conversations.index');
         Route::get('vote', [VoteCmsController::class, 'index'])->name('vote.index');
-        Route::resource('votes', VotesCmsController::class);
+
+        Route::get('votes', [VotesCmsController::class, 'index'])->name('votes.index');
+
         Route::get('print', [VoteCmsController::class, 'printResult'])->name('vote.print');
         Route::resource('meeting-configs', MeetingConfigController::class);
         Route::get('/print/bbkt', [PrintController::class, 'showBBKT'])->name('print.bbkt');
@@ -66,22 +69,22 @@ Route::prefix('admin')->name('cms.')->group(function () {
         Route::get('api-agm_info', [VoteCmsController::class, 'getAgmInfo'])->name('vote.agm_info');
 
         // Quản lý phiếu biểu quyết (CRUD)
-        Route::prefix('votes')->name('votes.')->group(function () {
-            Route::get('/', [VoteCmsController::class, 'list'])->name('list');
-            Route::get('/create', [VoteCmsController::class, 'create'])->name('create');
-            Route::post('/', [VoteCmsController::class, 'store'])->name('store');
-            Route::get('/{vote}/edit', [VoteCmsController::class, 'edit'])->name('edit');
-            Route::put('/{vote}', [VoteCmsController::class, 'update'])->name('update');
-            Route::delete('/{vote}', [VoteCmsController::class, 'destroy'])->name('destroy');
-    Route::get('/', [\App\Http\Controllers\Cms\VotesCmsController::class, 'index'])->name('index');
+        // Route::prefix('votes')->name('votes.')->group(function () {
+        //     Route::get('/', [VoteCmsController::class, 'list'])->name('list');
+        //     Route::get('/create', [VoteCmsController::class, 'create'])->name('create');
+        //     Route::post('/', [VoteCmsController::class, 'store'])->name('store');
+        //     Route::get('/{vote}/edit', [VoteCmsController::class, 'edit'])->name('edit');
+        //     Route::put('/{vote}', [VoteCmsController::class, 'update'])->name('update');
+        //     Route::delete('/{vote}', [VoteCmsController::class, 'destroy'])->name('destroy');
+    // Route::get('/', [\App\Http\Controllers\Cms\VotesCmsController::class, 'index'])->name('index');
 
             // Quản lý mục phiếu biểu quyết
-            Route::get('/{vote}/items', [VoteCmsController::class, 'listItems'])->name('items.list');
-            Route::get('/{vote}/items/create', [VoteCmsController::class, 'createItem'])->name('items.create');
-            Route::post('/{vote}/items', [VoteCmsController::class, 'storeItem'])->name('items.store');
-            Route::get('/{vote}/items/{item}/edit', [VoteCmsController::class, 'editItem'])->name('items.edit');
-            Route::put('/{vote}/items/{item}', [VoteCmsController::class, 'updateItem'])->name('items.update');
-            Route::delete('/{vote}/items/{item}', [VoteCmsController::class, 'destroyItem'])->name('items.destroy');
-        });
+        //     Route::get('/{vote}/items', [VoteCmsController::class, 'listItems'])->name('items.list');
+        //     Route::get('/{vote}/items/create', [VoteCmsController::class, 'createItem'])->name('items.create');
+        //     Route::post('/{vote}/items', [VoteCmsController::class, 'storeItem'])->name('items.store');
+        //     Route::get('/{vote}/items/{item}/edit', [VoteCmsController::class, 'editItem'])->name('items.edit');
+        //     Route::put('/{vote}/items/{item}', [VoteCmsController::class, 'updateItem'])->name('items.update');
+        //     Route::delete('/{vote}/items/{item}', [VoteCmsController::class, 'destroyItem'])->name('items.destroy');
+        // });
     });
 });

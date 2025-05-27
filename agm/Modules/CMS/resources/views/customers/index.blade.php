@@ -111,21 +111,38 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button
-                                        class="btn btn-sm {{ $customer->is_checkin == 1 ? 'btn-green' : 'btn-secondary' }} checkin-toggle"
-                                        data-customer-id="{{ $customer->id }}"
-                                        data-checkin-status="{{ $customer->is_checkin }}"
-                                    >
-                                        <span class="d-flex align-items-center gap-1">
-                                            @if($customer->is_checkin == 1)
-                                                <x-tabler-icon name="check" size="16" />
-                                                <span>Đã check-in</span>
-                                            @else
+                                    @php
+                                        // Kiểm tra xem có phải là người được ủy quyền không phải cổ đông không
+                                        $hasShareholderAuthority = $customer->authoritiesGiven->isNotEmpty();
+                                        // Kiểm tra điều kiện ủy quyền hết cổ phần
+                                        $hasFullyDelegated = $customer->co_phan_da_uy_quyen >= $customer->co_phan_so_huu;
+                                    @endphp
+                                    
+                                    @if ($hasFullyDelegated && $hasShareholderAuthority)
+                                        <button class="btn btn-sm btn-secondary" disabled>
+                                            <span class="d-flex align-items-center gap-1">
                                                 <x-tabler-icon name="x" size="16" />
-                                                <span>Chưa check-in</span>
-                                            @endif
-                                        </span>
-                                    </button>
+                                                <span>Không thể check-in</span>
+                                            </span>
+                                        </button>
+                                        <small class="d-block text-muted" style="font-size: 11px;">(Đã ủy quyền hết cổ phần)</small>
+                                    @else
+                                        <button
+                                            class="btn btn-sm {{ $customer->is_checkin == 1 ? 'btn-green' : 'btn-secondary' }} checkin-toggle"
+                                            data-customer-id="{{ $customer->id }}"
+                                            data-checkin-status="{{ $customer->is_checkin }}"
+                                        >
+                                            <span class="d-flex align-items-center gap-1">
+                                                @if($customer->is_checkin == 1)
+                                                    <x-tabler-icon name="check" size="16" />
+                                                    <span>Đã check-in</span>
+                                                @else
+                                                    <x-tabler-icon name="x" size="16" />
+                                                    <span>Chưa check-in</span>
+                                                @endif
+                                            </span>
+                                        </button>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">

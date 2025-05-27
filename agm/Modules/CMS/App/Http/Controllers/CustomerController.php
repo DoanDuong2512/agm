@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Modules\CMS\App\Services\PageTitleService;
+use App\Models\Authority;
 
 class CustomerController extends Controller
 {
@@ -17,7 +18,10 @@ class CustomerController extends Controller
         $perPage = (int) $request->input('per_page', 10);
         $perPage = ($perPage > 0 && $perPage <= 100) ? $perPage : 10;
         
-        $query = Customer::query();
+        $query = Customer::query()
+            ->with(['authoritiesGiven' => function($query) {
+                $query->where('is_shareholder', 1);
+            }]);
         
         // Handle search
         if ($request->has('search') && !empty($request->search)) {
@@ -75,6 +79,7 @@ class CustomerController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_active'] = ((int)$validated['is_active'] === 1) ? Customer::ACTIVATED : Customer::NOT_ACTIVATED;
+        
         $validated['is_checkin'] = (int)$validated['is_checkin'];
 
         Customer::create($validated);
@@ -108,7 +113,17 @@ class CustomerController extends Controller
             'tong_so_co_dong_uy_quyen' => ['nullable', 'integer', 'min:0'],
             'co_dong_noi_bo' => ['nullable', 'boolean'],
         ]);
+        if ((int)$validated['is_checkin'] === 1) {
+            // Kiểm tra xem có phải người được ủy quyền không phải cổ đông không
+            $hasShareholderAuthority = Authority::where('nguoi_uy_quyen', $customer->id)
+                ->where('is_shareholder', 1)
+                ->exists();
 
+            // Nếu không phải người được ủy quyền không phải cổ đông và đã ủy quyền hết cổ phần
+            if ($hasShareholderAuthority && $customer->co_phan_da_uy_quyen >= $customer->co_phan_so_huu) {
+                $validated['is_checkin'] = 0;
+            }
+        }
         if ($request->filled('password')) {
             $request->validate([
                 'password' => ['required', Password::defaults()],
@@ -136,8 +151,18 @@ class CustomerController extends Controller
 
     public function toggleCheckin(Customer $customer)
     {
+        $hasShareholderAuthority = Authority::where('nguoi_uy_quyen', $customer->id)
+                ->where('is_shareholder', 1)
+                ->exists();
+
+            // Nếu không phải người được ủy quyền không phải cổ đông và đã ủy quyền hết cổ phần
+        if ($hasShareholderAuthority && $customer->co_phan_da_uy_quyen >= $customer->co_phan_so_huu) {
+            $customer->is_checkin = 0;
+        } else {
+            $customer->is_checkin = !$customer->is_checkin;
+        }
         $customer->update([
-            'is_checkin' => !$customer->is_checkin
+            'is_checkin' => $customer->is_checkin
         ]);
 
         return response()->json([
@@ -146,3 +171,4 @@ class CustomerController extends Controller
         ]);
     }
 }
+
