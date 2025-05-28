@@ -3,7 +3,7 @@ import { getFromLocalStorage, removeFromLocalStorage } from '../utils/localStora
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
-  timeout: parseInt(import.meta.env.VITE_API_BASE_URL, 10) || 10000, // Thời gian chờ request (30 giây)
+  timeout: parseInt(import.meta.env.VITE_API_TIMEOUT, 10) || 10000, // Thời gian chờ request (30 giây)
   headers: {
     'Content-Type': 'application/json',
   },

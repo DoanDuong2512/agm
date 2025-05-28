@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>In tài liệu</title>
-    @vite(['D:/datn_duong/agm/Modules/CMS/resources/assets/sass/app.scss', 'D:/datn_duong/agm/Modules/CMS/resources/assets/js/app.js'], 'build-cms')
+    @vite(['resources/assets/sass/app.scss', 'resources/assets/js/app.js'], 'build-cms')
     @stack('styles')
 </head>
 <body>

@@ -20,7 +20,7 @@
     <script src="{{ asset('modules/cms/static/js/vue.global.js') }}"></script>
     
     <!-- Styles -->
-    @vite(['D:/datn_duong/agm/Modules/CMS/resources/assets/sass/app.scss', 'D:/datn_duong/agm/Modules/CMS/resources/assets/js/app.js'], 'build-cms')
+    @vite(['resources/assets/sass/app.scss', 'resources/assets/js/app.js'], 'build-cms')
     @stack('styles')
 </head>
 <body data-flash-message="{{ session('flash_message') }}" data-flash-type="{{ session('flash_type') }}">
